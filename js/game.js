@@ -19,10 +19,6 @@ define(['table', 'jquery'], function(Table, $) {
         $(".button#resetButton").click(function() {
             _this.reset();
         });
-
-        // debugging
-        window.t = this.table;
-        window.g = this;
     };
 
     Game.prototype.reset = function() {
