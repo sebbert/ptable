@@ -1,0 +1,84 @@
+@import "base"
+
+$table-width: 990px
+$cell-margin: 5px
+$cells-v: 18
+$cells-h: 10
+
+$cell-total: $table-width / $cells-v
+$cell-dim: $cell-total - $cell-margin
+$cell-margins: $cell-margin / 2
+$table-height: $cell-total * $cells-h
+
+#game
+    width: $table-width
+    height: $table-height
+    text-align: left
+    position: relatives
+
+    margin-top: 40px
+
+    margin-left: auto
+    margin-right: auto
+    border-radius: 5px
+    opacity: 1
+
+    +translate(0px, 0px)
+
+    &.hidden
+        opacity: 0
+        +translate(0px, 40px)
+    
+    
+    +transition-property(transform, opacity)
+    +transition-duration(1s)
+    +transition-delay(0s, 0.1s)
+     
+
+
+.cell
+    display: inline-block
+    position: absolute
+    box-sizing: border-box
+
+    text-align: center
+    padding-top: 14px
+    text-shadow: 0px 1px 1px rgba(0, 0, 0, 0.5)
+    font-size: 1.2em
+    font-weight: 100
+
+    width: $cell-dim
+    height: $cell-dim
+    margin: $cell-margins
+    background-color: lighten($base-color, 10%)
+    border-radius: 2px
+
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.5), 0px 0px 30px rgba(#fff, 0.1), inset 0px 1px 1px rgba(#fff, 0.2)
+    border-color: rgba(#fff, 0)
+
+    +transition-property(top,   left,  background-color, box-shadow, transform)
+    +transition-duration(0.5s,  0.5s,  0.05s,            0.3s,      0.05s)
+
+    &:hover
+        background-color: lighten($base-color, 15%)
+        box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.6), 0px 0px 30px rgba(#fff, 0.1), inset 0px 1px 1px rgba(#fff, 0.2)
+        cursor: pointer
+
+    &.correct
+        background-color: #00E9A6
+        color: $base-color
+        box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.5), 0px 0px 30px rgba(#00E9A6, 0.2), inset 0px 1px 1px rgba(#fff, 0.2)
+        text-shadow: 0px 1px 0px rgba(#fff, 0.6)
+        cursor: default !important
+
+        z-index: 1000
+
+    &.selected
+        box-shadow: 0px 0px 0px 2px #fff, 0px 1px 2px 2px rgba(0, 0, 0, 0.5), 0px 0px 30px rgba(#fff, 0.1)
+
+
+@for $x from 1 through $cells-v
+    @for $y from 1 through $cells-h
+        .p#{$x}x#{$y}
+            top: ($y - 1) * $cell-total
+            left: ($x - 1) * $cell-total

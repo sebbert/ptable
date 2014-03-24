@@ -1,27 +1,56 @@
-define(["lib/undescore"], function(_) {
-    var correctTable = [
-        /*          1     2    3    4    5    6    7    8    9    10   11   12   13    14   15    16   17   18 */
-        /* 2 */    "H" ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0  ,  0 ,  0  ,  0 ,  0  ,"He" ,
-        /* 3 */    "Li","Be",  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 , "B" , "C", "N" , "O", "F" ,"Ne" ,
-        /* 4 */    "Na","Mg",  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,"Al" ,"Si", "P" , "S","Cl" ,"Ar" ,
-        /* 5 */     "K","Ca","Sc","Ti", "V","Cr","Mn","Fe","Co","Ni","Cu","Zn","Ga" ,"Ge","As" ,"Se","Br" ,"Kr" ,
-        /* 6 */    "Rb","Sr", "Y","Zr","Nb","Mo","Tc","Ru","Rh","Pd","Ag","Cd","In" ,"Sn","Sb" ,"Te", "I" ,"Xe" ,
-        /* 7 */    "Cs","Ba",  0 ,"Hf","Ta", "W","Re","Os","Ir","Pt","Au","Hg","Ti" ,"Pb","Bi" ,"Po","At" ,"Rn" ,
-        /* 8 */    "Fr","Ra",  0 ,"Rf","Db","Sg","Bh","Hs","Mt","Ds","Rg","Cn","Uut","Fl","Uup","Lv","Uus","Uuo"
-    ];
+define(['underscore', 'cell', 'elements', 'util/util'], function(_, Cell, elements, Util) {
+    var TABLE_COLUMNS   = 18,
+        TABLE_ROWS      = 8;
 
-    var tableMask = [
-        1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-        1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1,
-        1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1,
-        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-        1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-        1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
-    ];
+    var Table = function(cells) {
+        this.cells = [];
 
-    var Table = function() {
-        
+        if(cells) {
+            for(var i = 0; i < cells.length; ++i) {
+                var cell = Cell.deserialize(cells[i]);
+                this.cells.push(cell);
+            }
+        }
+
+        else {
+            var shuffled = Util.shuffleElements();
+
+            for(var i = 0; i < elements.length; ++i) {
+                // Only insert an element if there's supposed to be an element here...
+                var element = shuffled[i];
+                if(!element) continue;
+
+                // Convert index to 2d coordinates
+                var x = (i % elements.columns);
+                var y = Math.floor(i / elements.columns);
+
+                var cell = new Cell(x, y, element);
+                this.cells.push(cell);
+            }
+        }
+    };
+
+    Table.prototype.insert = function(container) {
+        this.container = container;
+        for(var i = 0; i < this.cells.length; ++i) {
+            this.cells[i].insert(container);
+        }
+    };
+
+    Table.prototype.validate = function() {
+        for(var i = 0; i < this.cells.length; ++i) {
+            var cell = this.cells[i];
+            cell.validate();
+        }
+    };
+
+    Table.prototype.reset = function() {
+        var shuffled = Util.shuffleElements();
+        console.log(window._s = shuffled);
+
+        for(var i = 0; i < this.cells.length; ++i) {
+            this.cells[i].reset(shuffled);
+        }
     }
 
     return Table;
